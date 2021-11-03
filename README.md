@@ -51,9 +51,6 @@ sudo su -
 4. Copy the following set of commands and paste them into your server session. 
 
 ```bash
-#!/bin/bash
-# setup.sh
-
 echo 50000 | sudo tee /proc/sys/fs/inotify/max_user_watches
 
 sudo chattr -i /etc/sysctl.conf
@@ -153,24 +150,15 @@ exit 0
 ' > /etc/rc.local
 
 exit
-
-##########
-# UPLOAD
-# repo recipes from ./001_todo
-# to
-# /ydutilities/autorun/001_todo
-# on the server
-
-
 ```
 
 
 
-5. Upload the files from this repository at **./001_todo** to **/ydutilities/autorun/001_todo**
-
+5. Upload the files from this repository at **/ydutilities/autorun/001_todo** to **/ydutilities/autorun/001_todo** Here is how you could use rsync to do this.
 ```bash
 # from local to server
-dir_local="/path/to/downloaded/and/unzippped/repo/"
+# rsync must be installed on local and the server
+dir_local="/path/to/downloaded/and/unzippped/repo/ydutilities/autorun/001_todo/"
 dir_remote=/ydutilities/autorun/001_todo
 keyfile='/path/to/your/pem/my.pem'
 host=my.host.com
@@ -182,11 +170,23 @@ rsync --progress -h -v -r -P -t -z --no-o --no-g \
       $dir_local ubuntu@$host:$dir_remote --delete
 ```
 
-6. The system checks for a ***.start.root*** file every minute. This is the trigger file for executing the next shell script in the directory. The "next" file is based on a sort of the shell file name found in the directory.
+6. The system checks for a ***.start.root*** file every minute. This is the trigger file for executing the next shell script in the directory. The "next" file is based on a sort of the shell file names found in the directory.
    
 7. The next script file is executed as root. If you want the sequence of remaining files to execute sequentially, issue a **<u>/usr/bin/touch /ydutilities/autorun/001_todo/.start.root</u>** command at the end of the script. 
    
-8. By running the recipes in this repository, you will have an updated, upgraded Ubuntu 20.04 server with docker and docker-compose installed. 
+8. By running the recipes in this repository, you will have an updated, upgraded Ubuntu 20.04 server with docker and docker-compose installed. Expect 3 reboots before completion.
+
+9. To verify completion of all updates:
+```bash
+ls -al /ydutilities/autorun/001_todo
+```
+Should be empty. 
+
+And 
+```bash
+ls -al /ydutilities/autorun/002_completed
+```
+Should have all three recipe files.
 
 ## 🔐 LICENSE
 
